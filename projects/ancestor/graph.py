@@ -116,6 +116,44 @@ class Graph:
                     path.insert(0, starting_vertex)
                     return path
 
+    # def bft_ancestors(self, starting_vertex):
+    #     queue = Queue()
+    #     queue.enqueue(starting_vertex)
+    #     visited = set()
+    #     ancestors_dict = {}
+
+    #     while queue.size() > 0:
+    #         visiting = queue.dequeue()
+    #         # if next_vertex not in ancestors_dict:
+    #         #     ancestors_dict[next_vertex] = set()
+    #         # ancestors_dict[next_vertex].add(visiting)
+    #         if visiting not in visited:
+    #             ancestors_dict[visiting] = self.get_neighbors(visiting)
+    #             visited.add(visiting)
+    #             for next_vertex in self.get_neighbors(visiting):
+    #                 queue.enqueue(next_vertex)
+
+    #     return ancestors_dict
+
+    def dft_recursive_ancestors(self, starting_vertex, visited=None, count=0):
+        if len(self.get_neighbors(starting_vertex)) == 0:
+            return [set([starting_vertex]), count]
+        ancestors = [set([-1]), 0]
+        count += 1
+        if visited is None:
+            visited = set()
+        visited.add(starting_vertex)
+
+        for next_vertex in self.get_neighbors(starting_vertex):
+            if next_vertex not in visited:
+                found_ancestor = (self.dft_recursive_ancestors(
+                    next_vertex, visited, count))
+                if found_ancestor[1] > ancestors[1]:
+                    ancestors = found_ancestor
+                if found_ancestor[1] == ancestors[1]:
+                    ancestors[0] = ancestors[0].union(found_ancestor[0])
+        return ancestors
+
 
 if __name__ == '__main__':
     graph = Graph()  # Instantiate your graph
